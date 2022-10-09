@@ -5,8 +5,8 @@ import { useDrag } from '@use-gesture/react'
 import styles from './styles.module.css'
 
 const cards = [
-  'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/bpi.png',
   'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/gcash.png',
+  'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/bpi.png',
   'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/maya.png',
 ]
 
