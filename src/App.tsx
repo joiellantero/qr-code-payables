@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSprings, animated, to as interpolate } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
+import { HashLoader } from 'react-spinners'
 
 import styles from './styles.module.css'
 
@@ -73,9 +74,32 @@ function Deck() {
 }
 
 export default function App() {
-  return (
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLoading = () => {
+    setIsLoading(false);
+  }
+
+  useEffect(()=>{
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 5000)
+  },[])
+
+  return !isLoading ? (
     <div className={`flex fill center ${styles.container}`}>
       <Deck />
+    </div>
+  ) : (
+    <div className={`${styles.loader}`}>
+      <HashLoader
+        color={"#ffffff"}
+        loading={isLoading}
+        size={70}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
     </div>
   )
 }
