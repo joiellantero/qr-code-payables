@@ -93,7 +93,7 @@ export default function Deck(){
                     <div className={`${styles.loader}`}>
                         <GridLoader
                             color={"#ffffff"}
-                            size={70}
+                            size={20}
                             aria-label="Loading Spinner"
                             data-testid="loader"
                         />
