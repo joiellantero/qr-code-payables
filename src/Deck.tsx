@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSprings, animated, to as interpolate } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { HashLoader } from 'react-spinners'
+import { GridLoader } from 'react-spinners'
 
 import styles from './styles.module.css'
 import { images } from './Images'
@@ -91,7 +91,7 @@ export default function Deck(){
                 ) : (
                     // Show this loading animation while waiting for the images to load
                     <div className={`${styles.loader}`}>
-                        <HashLoader
+                        <GridLoader
                             color={"#ffffff"}
                             size={70}
                             aria-label="Loading Spinner"
