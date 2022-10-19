@@ -1,14 +1,16 @@
+// Adding or removing a set of ID and URL will also add or remove a card from the deck respectively.
+
 export const images = [
     {
         id: 0,
-        url: 'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/gcash.png',
+        url: process.env.REACT_APP_LINK0,
     },
     {
         id: 1,
-        url: 'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/bpi.png',
+        url: process.env.REACT_APP_LINK1,
     },
     {
         id: 2,
-        url: 'https://filedn.eu/llg7OaS63iDjHzQuApNqUx7/maya.png',
+        url: process.env.REACT_APP_LINK2,
     },
 ]
