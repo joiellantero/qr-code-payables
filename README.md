@@ -8,7 +8,7 @@
 
 1. Go to `src/Images.tsx` to change the QR image
    1. Create or edit your qr code as you like then upload the image in your cloud storage.
-   2. If you plan on making your repository **public**, follow the steps below.
+   2. If you want to hide your URLs to your QR codes in your source code, follow the steps below.
        1. Create a `.env` file in your root directory (where `package.json` is located).
        2. Make the images publicly available then copy and paste the URLs in the `.env` file similar to the format below:
           ```
@@ -19,7 +19,7 @@
           ```
           > Note that the variable name should start with "REACT_APP_"
           > Also note that these links will be revealed once the webapp is deployed (can be seen in inspect element). Saving the links in an `.env` file is simply so that the URLs are not directly exposed and are excluded when people fork your repository.
-   3. If you plan on making your repository **private**, follow the step below.
+   3. If you don't mind hiding your URLs, follow the step below.
        1. Make the images publicly available then copy and paste the URLs in the `Image.tsx` file similar to the format below:
        ```js
        {
@@ -55,3 +55,5 @@
 3. Heroku
 4. AWS Amplify
 5. AWS S3
+
+> Don't forget to add your environment variables in your chosen host if you have chosen to hide your URLs in your code.
