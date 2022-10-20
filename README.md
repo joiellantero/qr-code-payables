@@ -15,21 +15,18 @@
        1. Create a `.env` file in your root directory (where `package.json` is located).
        2. Make the images publicly available then copy and paste the URLs in the `.env` file similar to the format below:
           ```
-          ...
           REACT_APP_LINK0=https://yourcloudstorage.com/image0
           REACT_APP_LINK1=https://yourcloudstorage.com/image1
-          ...
           ```
           > Note that the variable name should start with "REACT_APP_"
    3. If you won't hide your URLs in your source code, follow the step below.
        1. Make the images publicly available then copy and paste the URLs in the `Image.tsx` file similar to the format below:
-       ```js
-       {
-           id: 0,
-           url: https://yourcloudstorage.com/image0,
-       },
-       ...
-       ```
+           ```js
+           {
+               id: 0,
+               url: 'https://yourcloudstorage.com/image0',
+           },
+           ```
 
 2. Go to `public/index.html` and change the text enclosed in the `<title>` tag to your preferred name.
 
