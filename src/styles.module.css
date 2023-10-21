@@ -27,8 +27,8 @@ html, body{
 
 .deck > div {
   touch-action: none;
-  background-color: white;
-  background-size: auto 100%;
+  background-color: #33374d;
+  background-size: auto 85%;
   background-repeat: no-repeat;
   background-position: center center;
   width: 45vh;
@@ -37,5 +37,5 @@ html, body{
   max-height: 570px;
   will-change: transform;
   border-radius: 10px;
-  box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4), 0 10px 10px -10px rgba(50, 50, 73, 0.3);
+  box-shadow: 0 12.5px 100px -10px rgba(34, 34, 50, 0.6), 0 10px 10px -10px rgba(34, 34, 50, 0.5);
 }
