@@ -1,5 +1,5 @@
 html, body{
-  background: lightblue;
+  background: #2A2D3F;
 }
 
 .loader {
@@ -28,7 +28,7 @@ html, body{
 .deck > div {
   touch-action: none;
   background-color: white;
-  background-size: auto 85%;
+  background-size: auto 100%;
   background-repeat: no-repeat;
   background-position: center center;
   width: 45vh;
