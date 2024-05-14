@@ -17,8 +17,4 @@ export const images = [
         id: 3,
         url: process.env.REACT_APP_LINK3,
     },
-    {
-        id: 4,
-        url: process.env.REACT_APP_LINK4,
-    },
 ]
