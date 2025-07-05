@@ -1,17 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSprings, animated, to as interpolate } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { RiseLoader } from 'react-spinners'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload } from '@fortawesome/free-solid-svg-icons'
 
 import styles from './styles.module.css'
 import { images } from './Images'
 
-// These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = (i: number) => ({
   x: 0,
-  y: i * -4,
+  y: 0,
   scale: 1,
   rot: -10 + Math.random() * 20,
+  opacity: 1,
   delay: i * 100,
 })
 const from = (_i: number) => ({
@@ -19,13 +21,15 @@ const from = (_i: number) => ({
   rot: 0,
   scale: 1.5,
   y: -1000,
+  opacity: 0,
 })
 const trans = (r: number, s: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 
 export default function Deck() {
   const [imgsLoaded, setImgsLoaded] = useState(false)
-  const [gone] = useState(() => new Set())
+  const gone = useRef(new Set<number>())
+  const [goneCount, setGoneCount] = useState(0)
 
   const [props, api] = useSprings(
     imgsLoaded ? images.length : 0,
@@ -41,7 +45,7 @@ export default function Deck() {
         const img = new Image()
         img.src = image.url!
         img.onload = () => resolve(image.url)
-        img.onerror = (err) => reject(err)
+        img.onerror = reject
       })
 
     Promise.all(images.map(loadImage)).then(() => {
@@ -62,69 +66,83 @@ export default function Deck() {
   const bind = useDrag(
     ({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
       const trigger = vx > 0.2
-      if (!active && trigger) gone.add(index)
+      if (!active && trigger) {
+        gone.current.add(index)
+        setGoneCount(gone.current.size)
+      }
 
       api.start(i => {
         if (index !== i) return
-        const isGone = gone.has(index)
+        const isGone = gone.current.has(index)
         const x = isGone ? (200 + window.innerWidth) * xDir : active ? mx : 0
         const rot = mx / 100 + (isGone ? xDir * 10 * vx : 0)
         const scale = active ? 1.1 : 1
+        const opacity = isGone ? 0 : 1
         return {
           x,
           rot,
           scale,
+          opacity,
           delay: undefined,
           config: { friction: 50, tension: active ? 800 : isGone ? 200 : 500 },
         }
       })
 
-      if (!active && gone.size === images.length)
+      if (!active && gone.current.size === images.length) {
         setTimeout(() => {
-          gone.clear()
+          gone.current.clear()
+          setGoneCount(0)
           api.start(i => to(i))
         }, 500)
+      }
     },
   )
 
+  const topIndex = images.length - goneCount - 1
+
   return (
-    <>
-      {props.length > 0 ? (
-        props.map(({ x, y, rot, scale }, i) => (
-          <animated.div className={styles.deck} key={i} style={{ x, y }}>
-            <animated.div
-              {...bind(i)}
-              style={{
-                transform: interpolate([rot, scale], trans),
-                backgroundImage: `url(${images[i].url})`,
-                position: 'relative',
-              }}
-            >
-              <button
-                className={styles.downloadButton}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  const link = document.createElement('a')
-                  link.href = images[i].url!
-                  link.download = `image-${i + 1}.jpg`
-                  link.click()
+    <div className="flex center fill">
+      {imgsLoaded ? (
+        props.map(({ x, y, rot, scale, opacity }, i) => {
+          const isTop = i === topIndex
+
+          return (
+            <animated.div className={styles.deck} key={i} style={{ x, y }}>
+              <animated.div
+                {...bind(i)}
+                className={styles.card}
+                style={{
+                  transform: interpolate([rot, scale], trans),
+                  backgroundImage: `url(${images[i].url})`,
+                  opacity,
                 }}
-              >
-                ⬇
-              </button>
+              />
+              {isTop && (
+                <animated.button
+                  className={styles.downloadButton}
+                  style={{
+                    opacity,
+                    transform: opacity.to(o => `translateY(${(1 - o) * 20}px)`),
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    const link = document.createElement('a')
+                    link.href = images[i].url!
+                    link.download = `image-${i + 1}.jpg`
+                    link.click()
+                  }}
+                >
+                  <FontAwesomeIcon icon={faDownload} /> Download
+                </animated.button>
+              )}
             </animated.div>
-          </animated.div>
-        ))
+          )
+        })
       ) : (
         <div className={styles.loader}>
-          <RiseLoader
-            color="#ffffff"
-            size={15}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+          <RiseLoader color="#ffffff" size={15} />
         </div>
       )}
-    </>
+    </div>
   )
 }

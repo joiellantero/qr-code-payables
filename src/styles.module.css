@@ -1,4 +1,4 @@
-html, body{
+html, body {
   background: #2A2D3F;
 }
 
@@ -11,22 +11,20 @@ html, body{
 }
 
 .container {
-  cursor: url('') 39 39,
-    auto;
+  cursor: url('') 39 39, auto;
 }
 
 .deck {
   position: absolute;
-  width: 300px;
-  height: 200px;
-  will-change: transform;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  will-change: transform;
 }
 
-.deck > div {
+.card {
   touch-action: none;
+  pointer-events: auto;
   background-color: #33374d;
   background-size: auto 85%;
   background-repeat: no-repeat;
@@ -37,25 +35,33 @@ html, body{
   max-height: 570px;
   will-change: transform;
   border-radius: 10px;
-  box-shadow: 0 12.5px 100px -10px rgba(34, 34, 50, 0.6), 0 10px 10px -10px rgba(34, 34, 50, 0.5);
+  box-shadow: 0 12.5px 100px -10px rgba(34, 34, 50, 0.6),
+              0 10px 10px -10px rgba(34, 34, 50, 0.5);
 }
 
 .downloadButton {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.6);
+  margin-top: 12px;
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #33374d21;
   color: white;
   border: none;
-  border-radius: 5px;
-  padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
-  z-index: 1;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    background-color 0.3s ease-in-out,
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+  will-change: opacity, transform;
 }
 
 .downloadButton:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #33374D;
 }
+
 
