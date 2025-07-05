@@ -39,3 +39,23 @@ html, body{
   border-radius: 10px;
   box-shadow: 0 12.5px 100px -10px rgba(34, 34, 50, 0.6), 0 10px 10px -10px rgba(34, 34, 50, 0.5);
 }
+
+.downloadButton {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 8px;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.downloadButton:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+

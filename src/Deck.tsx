@@ -20,17 +20,13 @@ const from = (_i: number) => ({
   scale: 1.5,
   y: -1000,
 })
-// This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 
 export default function Deck() {
-  // Wait for images to be loaded
   const [imgsLoaded, setImgsLoaded] = useState(false)
+  const [gone] = useState(() => new Set())
 
-  const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
-
-  // Don't create springs until images are loaded
   const [props, api] = useSprings(
     imgsLoaded ? images.length : 0,
     i => ({
@@ -39,12 +35,11 @@ export default function Deck() {
     }),
   )
 
-  // Load all images first
   useEffect(() => {
     const loadImage = (image) =>
       new Promise((resolve, reject) => {
         const img = new Image()
-        img.src = image.url
+        img.src = image.url!
         img.onload = () => resolve(image.url)
         img.onerror = (err) => reject(err)
       })
@@ -54,7 +49,6 @@ export default function Deck() {
     })
   }, [])
 
-  // Once images are loaded, trigger the card animations
   useEffect(() => {
     if (!imgsLoaded) return
     api.start(i => ({
@@ -65,18 +59,17 @@ export default function Deck() {
     }))
   }, [imgsLoaded, api])
 
-  // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
   const bind = useDrag(
     ({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
-      const trigger = vx > 0.2 // If you flick hard enough it should trigger the card to fly out
-      if (!active && trigger) gone.add(index) // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
+      const trigger = vx > 0.2
+      if (!active && trigger) gone.add(index)
 
       api.start(i => {
-        if (index !== i) return // We're only interested in changing spring-data for the current spring
+        if (index !== i) return
         const isGone = gone.has(index)
-        const x = isGone ? (200 + window.innerWidth) * xDir : active ? mx : 0 // When a card is gone it flys out left or right, otherwise goes back to zero
-        const rot = mx / 100 + (isGone ? xDir * 10 * vx : 0) // How much the card tilts, flicking it harder makes it rotate faster
-        const scale = active ? 1.1 : 1 // Active cards lift up a bit
+        const x = isGone ? (200 + window.innerWidth) * xDir : active ? mx : 0
+        const rot = mx / 100 + (isGone ? xDir * 10 * vx : 0)
+        const scale = active ? 1.1 : 1
         return {
           x,
           rot,
@@ -94,24 +87,35 @@ export default function Deck() {
     },
   )
 
-  // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
   return (
     <>
       {props.length > 0 ? (
         props.map(({ x, y, rot, scale }, i) => (
           <animated.div className={styles.deck} key={i} style={{ x, y }}>
-            {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
             <animated.div
               {...bind(i)}
               style={{
                 transform: interpolate([rot, scale], trans),
                 backgroundImage: `url(${images[i].url})`,
+                position: 'relative',
               }}
-            />
+            >
+              <button
+                className={styles.downloadButton}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  const link = document.createElement('a')
+                  link.href = images[i].url!
+                  link.download = `image-${i + 1}.jpg`
+                  link.click()
+                }}
+              >
+                ⬇
+              </button>
+            </animated.div>
           </animated.div>
         ))
       ) : (
-        // Show this loading animation while waiting for the images to load
         <div className={styles.loader}>
           <RiseLoader
             color="#ffffff"
