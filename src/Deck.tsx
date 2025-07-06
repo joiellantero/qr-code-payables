@@ -117,24 +117,28 @@ export default function Deck() {
                   opacity,
                 }}
               />
-              {isTop && (
-                <animated.button
-                  className={styles.downloadButton}
-                  style={{
-                    opacity,
-                    transform: opacity.to(o => `translateY(${(1 - o) * 20}px)`),
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    const link = document.createElement('a')
-                    link.href = images[i].url!
-                    link.download = `image-${i + 1}.jpg`
-                    link.click()
-                  }}
-                >
-                  <FontAwesomeIcon icon={faDownload} /> Download
-                </animated.button>
-              )}
+
+              <animated.button
+                className={styles.downloadButton}
+                style={{
+                  opacity: isTop ? opacity : 0,
+                  transform: isTop
+                    ? opacity.to(o => `translateY(${(1 - o) * 20}px)`)
+                    : 'translateY(20px)',
+                  pointerEvents: isTop ? 'auto' : 'none',
+                  position: 'absolute',
+                  bottom: '-50px',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  const link = document.createElement('a')
+                  link.href = images[i].url!
+                  link.download = `image-${i + 1}.jpg`
+                  link.click()
+                }}
+              >
+                <FontAwesomeIcon icon={faDownload}/>
+              </animated.button>
             </animated.div>
           )
         })
