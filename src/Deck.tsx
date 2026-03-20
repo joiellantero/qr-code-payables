@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
-import { useSprings, animated, to as interpolate } from '@react-spring/web'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { useSprings, animated, to as interpolate, useSpring } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { RiseLoader } from 'react-spinners'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload } from '@fortawesome/free-solid-svg-icons'
 
 import styles from './styles.module.css'
 import { images } from './Images'
@@ -13,7 +11,6 @@ const to = (i: number) => ({
   y: 0,
   scale: 1,
   rot: -10 + Math.random() * 20,
-  opacity: 1,
   delay: i * 100,
 })
 const from = (_i: number) => ({
@@ -21,7 +18,6 @@ const from = (_i: number) => ({
   rot: 0,
   scale: 1.5,
   y: -1000,
-  opacity: 0,
 })
 const trans = (r: number, s: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
@@ -30,6 +26,8 @@ export default function Deck() {
   const [imgsLoaded, setImgsLoaded] = useState(false)
   const gone = useRef(new Set<number>())
   const [goneCount, setGoneCount] = useState(0)
+  const [zoomedIndex, setZoomedIndex] = useState<number | null>(null)
+  const dragOccurred = useRef(false)
 
   const [props, api] = useSprings(
     imgsLoaded ? images.length : 0,
@@ -38,6 +36,25 @@ export default function Deck() {
       immediate: true,
     }),
   )
+
+  const [overlaySpring, overlayApi] = useSpring(() => ({
+    opacity: 0,
+    scale: 0.85,
+    config: { tension: 300, friction: 26 },
+  }))
+
+  const openZoom = useCallback((index: number) => {
+    setZoomedIndex(index)
+    overlayApi.start({ opacity: 1, scale: 1 })
+  }, [overlayApi])
+
+  const closeZoom = useCallback(() => {
+    overlayApi.start({
+      opacity: 0,
+      scale: 0.85,
+      onRest: () => setZoomedIndex(null),
+    })
+  }, [overlayApi])
 
   useEffect(() => {
     const loadImage = (image) =>
@@ -65,6 +82,8 @@ export default function Deck() {
 
   const bind = useDrag(
     ({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
+      if (active && Math.abs(mx) > 4) dragOccurred.current = true
+
       const trigger = vx > 0.2
       if (!active && trigger) {
         gone.current.add(index)
@@ -77,12 +96,10 @@ export default function Deck() {
         const x = isGone ? (200 + window.innerWidth) * xDir : active ? mx : 0
         const rot = mx / 100 + (isGone ? xDir * 10 * vx : 0)
         const scale = active ? 1.1 : 1
-        const opacity = 1
         return {
           x,
           rot,
           scale,
-          opacity,
           delay: undefined,
           config: { friction: 50, tension: active ? 800 : isGone ? 200 : 500 },
         }
@@ -103,10 +120,8 @@ export default function Deck() {
   return (
     <div className="flex center fill">
       {imgsLoaded ? (
-        props.map(({ x, y, rot, scale, opacity }, i) => {
-          const isTop = i === topIndex
-
-          return (
+        <>
+          {props.map(({ x, y, rot, scale }, i) => (
             <animated.div className={styles.deck} key={i} style={{ x, y }}>
               <animated.div
                 {...bind(i)}
@@ -114,34 +129,36 @@ export default function Deck() {
                 style={{
                   transform: interpolate([rot, scale], trans),
                   backgroundImage: `url(${images[i].url})`,
-                  opacity,
+                }}
+                onPointerUp={() => {
+                  if (!dragOccurred.current && i === topIndex) openZoom(i)
+                  dragOccurred.current = false
                 }}
               />
-
-              <animated.button
-                className={styles.downloadButton}
-                style={{
-                  opacity: isTop ? opacity : 0,
-                  transform: isTop
-                    ? opacity.to(o => `translateY(${(1 - o) * 20}px)`)
-                    : 'translateY(20px)',
-                  pointerEvents: isTop ? 'auto' : 'none',
-                  position: 'absolute',
-                  bottom: '-50px',
-                }}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  const link = document.createElement('a')
-                  link.href = images[i].url!
-                  link.download = `image-${i + 1}.jpg`
-                  link.click()
-                }}
-              >
-                <FontAwesomeIcon icon={faDownload}/>
-              </animated.button>
             </animated.div>
-          )
-        })
+          ))}
+
+          <div className={styles.hint}>
+            Tap card to zoom &middot; Swipe to browse
+          </div>
+
+          {zoomedIndex !== null && (
+            <animated.div
+              className={styles.overlay}
+              style={{ opacity: overlaySpring.opacity }}
+              onClick={closeZoom}
+            >
+              <animated.div
+                className={styles.zoomedCard}
+                style={{
+                  backgroundImage: `url(${images[zoomedIndex].url})`,
+                  scale: overlaySpring.scale,
+                }}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </animated.div>
+          )}
+        </>
       ) : (
         <div className={styles.loader}>
           <RiseLoader color="#ffffff" size={15} />
