@@ -77,7 +77,7 @@ export default function Deck() {
         const x = isGone ? (200 + window.innerWidth) * xDir : active ? mx : 0
         const rot = mx / 100 + (isGone ? xDir * 10 * vx : 0)
         const scale = active ? 1.1 : 1
-        const opacity = isGone ? 0 : 1
+        const opacity = 1
         return {
           x,
           rot,
