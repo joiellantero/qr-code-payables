@@ -7,6 +7,9 @@ export default function App() {
     <div className={`flex fill center ${styles.container}`}>
         <BGPattern variant="dots" mask="fade-edges" size={20} fill="rgba(255,255,255,0.18)" />
         <Deck />
+        <a href="https://sudojoie.com" target="_blank" rel="noopener noreferrer" className={styles.footer}>
+          sudojoie.com
+        </a>
     </div>
   )
 }

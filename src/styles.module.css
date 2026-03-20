@@ -95,6 +95,23 @@ html, body {
   cursor: default;
 }
 
+.footer {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  z-index: 10;
+}
+
+.footer:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 
 
 

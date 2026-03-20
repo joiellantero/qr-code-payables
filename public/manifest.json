@@ -1,6 +1,6 @@
 {
-  "short_name": "QR Codes",
-  "name": "QR Codes",
+  "short_name": "SwipeQR",
+  "name": "SwipeQR",
   "icons": [
     {
       "src": "favicon.ico",
