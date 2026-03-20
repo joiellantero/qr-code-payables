@@ -15,6 +15,7 @@ html, body {
 .container {
   cursor: default;
   position: relative;
+  overflow: hidden;
 }
 
 .deck {
