@@ -112,6 +112,47 @@ html, body {
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* Morph loading */
+.morph0, .morph1, .morph2, .morph3 {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+
+.morph0 { animation: morph-0 2s infinite ease-in-out; }
+.morph1 { animation: morph-1 2s infinite ease-in-out 0.2s; }
+.morph2 { animation: morph-2 2s infinite ease-in-out 0.4s; }
+.morph3 { animation: morph-3 2s infinite ease-in-out 0.6s; }
+
+@keyframes morph-0 {
+  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 0%; }
+  25% { transform: translate(20px, -20px) scale(1.2); border-radius: 50%; }
+  50% { transform: translate(40px, 0) scale(0.8); border-radius: 25%; }
+  75% { transform: translate(20px, 20px) scale(1.1); border-radius: 75%; }
+}
+
+@keyframes morph-1 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 0%; }
+  25% { transform: translate(-20px, -20px) scale(1.3) rotate(90deg); border-radius: 50%; }
+  50% { transform: translate(-40px, 0) scale(0.7) rotate(180deg); border-radius: 25%; }
+  75% { transform: translate(-20px, 20px) scale(1.2) rotate(270deg); border-radius: 75%; }
+}
+
+@keyframes morph-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 0%; }
+  25% { transform: translate(-20px, 20px) scale(0.9); border-radius: 100%; }
+  50% { transform: translate(0, 40px) scale(1.4); border-radius: 0%; }
+  75% { transform: translate(20px, 20px) scale(0.8); border-radius: 50%; }
+}
+
+@keyframes morph-3 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 0%; }
+  25% { transform: translate(20px, 20px) scale(1.1) rotate(-90deg); border-radius: 25%; }
+  50% { transform: translate(0, -40px) scale(1.3) rotate(-180deg); border-radius: 100%; }
+  75% { transform: translate(-20px, -20px) scale(0.9) rotate(-270deg); border-radius: 75%; }
+}
+
 
 
 

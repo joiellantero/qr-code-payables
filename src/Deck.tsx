@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSprings, animated, to as interpolate, useSpring } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { RiseLoader } from 'react-spinners'
+import MorphLoading from './MorphLoading'
 
 import styles from './styles.module.css'
 import { images } from './Images'
@@ -161,7 +161,7 @@ export default function Deck() {
         </>
       ) : (
         <div className={styles.loader}>
-          <RiseLoader color="#ffffff" size={15} />
+          <MorphLoading size="lg" />
         </div>
       )}
     </div>
