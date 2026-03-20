@@ -3,12 +3,16 @@ body,
 #root {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 body {
   font-family: system-ui, sans-serif;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   margin: 0;
+  position: fixed;
+  width: 100%;
 }
 
 *,

@@ -16,6 +16,8 @@ html, body {
   cursor: default;
   position: relative;
   overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
 }
 
 .deck {
@@ -77,10 +79,8 @@ html, body {
 }
 
 .zoomedCard {
-  width: 85vmin;
+  width: 90vw;
   max-width: 420px;
-  height: 85vmin;
-  max-height: 720px;
   aspect-ratio: 9 / 16;
   background-color: #d8dae8;
   background-size: auto 90%;

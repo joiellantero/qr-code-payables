@@ -154,7 +154,7 @@ export default function Deck() {
                   backgroundImage: `url(${images[zoomedIndex].url})`,
                   scale: overlaySpring.scale,
                 }}
-                onClick={(e) => e.stopPropagation()}
+                onClick={closeZoom}
               />
             </animated.div>
           )}
