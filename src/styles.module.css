@@ -38,7 +38,7 @@ html, body {
   width: 45vh;
   max-width: 300px;
   height: 85vh;
-  max-height: 570px;
+  max-height: min(570px, calc(100dvh - 100px));
   will-change: transform;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -52,7 +52,7 @@ html, body {
 
 .hint {
   position: fixed;
-  bottom: 28px;
+  bottom: 48px;
   left: 50%;
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.3);
@@ -78,26 +78,9 @@ html, body {
   cursor: zoom-out;
 }
 
-.zoomedCard {
-  width: 90vw;
-  max-width: 420px;
-  aspect-ratio: 9 / 16;
-  background-color: #d8dae8;
-  background-size: auto 90%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
-              0 8px 20px rgba(0, 0, 0, 0.15),
-              0 24px 48px -8px rgba(0, 0, 0, 0.2),
-              0 48px 96px -16px rgba(0, 0, 0, 0.18);
-  cursor: default;
-}
-
 .footer {
   position: fixed;
-  bottom: 10px;
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.3);
@@ -110,6 +93,17 @@ html, body {
 
 .footer:hover {
   color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 480px) {
+  .footer {
+    bottom: 12px;
+    font-size: 6px;
+  }
+  .hint {
+    bottom: 32px;
+    font-size: 11px;
+  }
 }
 
 /* Morph loading */

@@ -11,6 +11,7 @@ const to = (i: number) => ({
   y: 0,
   scale: 1,
   rot: -10 + Math.random() * 20,
+  zoom: 0,
   delay: i * 100,
 })
 const from = (_i: number) => ({
@@ -18,9 +19,14 @@ const from = (_i: number) => ({
   rot: 0,
   scale: 1.5,
   y: -1000,
+  zoom: 0,
 })
-const trans = (r: number, s: number) =>
-  `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
+const trans = (r: number, s: number, z: number) => {
+  const rotX = 30 * (1 - z)
+  const rotY = (r / 10) * (1 - z)
+  const rotZ = r * (1 - z)
+  return `perspective(1500px) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${s})`
+}
 
 export default function Deck() {
   const [imgsLoaded, setImgsLoaded] = useState(false)
@@ -39,22 +45,42 @@ export default function Deck() {
 
   const [overlaySpring, overlayApi] = useSpring(() => ({
     opacity: 0,
-    scale: 0.85,
     config: { tension: 300, friction: 26 },
   }))
 
   const openZoom = useCallback((index: number) => {
     setZoomedIndex(index)
-    overlayApi.start({ opacity: 1, scale: 1 })
-  }, [overlayApi])
+    overlayApi.start({ opacity: 1 })
+    api.start(i => {
+      if (i !== index) return
+      return {
+        rot: 0,
+        scale: 1.4,
+        zoom: 1,
+        x: 0,
+        y: 0,
+        delay: undefined,
+        config: { tension: 300, friction: 26 },
+      }
+    })
+  }, [api, overlayApi])
 
   const closeZoom = useCallback(() => {
+    if (zoomedIndex === null) return
+    const index = zoomedIndex
     overlayApi.start({
       opacity: 0,
-      scale: 0.85,
       onRest: () => setZoomedIndex(null),
     })
-  }, [overlayApi])
+    api.start(i => {
+      if (i !== index) return
+      return {
+        ...to(index),
+        delay: undefined,
+        config: { tension: 300, friction: 26 },
+      }
+    })
+  }, [zoomedIndex, api, overlayApi])
 
   useEffect(() => {
     const loadImage = (image) =>
@@ -82,6 +108,7 @@ export default function Deck() {
 
   const bind = useDrag(
     ({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
+      if (zoomedIndex !== null) return
       if (active && Math.abs(mx) > 4) dragOccurred.current = true
 
       const trigger = vx > 0.2
@@ -121,17 +148,25 @@ export default function Deck() {
     <div className="flex center fill">
       {imgsLoaded ? (
         <>
-          {props.map(({ x, y, rot, scale }, i) => (
-            <animated.div className={styles.deck} key={i} style={{ x, y }}>
+          {props.map(({ x, y, rot, scale, zoom }, i) => (
+            <animated.div
+              className={styles.deck}
+              key={i}
+              style={{ x, y, zIndex: i === zoomedIndex ? 1001 : undefined }}
+            >
               <animated.div
                 {...bind(i)}
                 className={styles.card}
                 style={{
-                  transform: interpolate([rot, scale], trans),
+                  transform: interpolate([rot, scale, zoom], trans),
                   backgroundImage: `url(${images[i].url})`,
+                  cursor: i === zoomedIndex ? 'zoom-out' : 'pointer',
                 }}
                 onPointerUp={() => {
-                  if (!dragOccurred.current && i === topIndex) openZoom(i)
+                  if (!dragOccurred.current) {
+                    if (zoomedIndex === i) closeZoom()
+                    else if (i === topIndex) openZoom(i)
+                  }
                   dragOccurred.current = false
                 }}
               />
@@ -147,16 +182,7 @@ export default function Deck() {
               className={styles.overlay}
               style={{ opacity: overlaySpring.opacity }}
               onClick={closeZoom}
-            >
-              <animated.div
-                className={styles.zoomedCard}
-                style={{
-                  backgroundImage: `url(${images[zoomedIndex].url})`,
-                  scale: overlaySpring.scale,
-                }}
-                onClick={closeZoom}
-              />
-            </animated.div>
+            />
           )}
         </>
       ) : (
